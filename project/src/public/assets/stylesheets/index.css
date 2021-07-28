@@ -10,6 +10,19 @@ body {
   text-align: center;
 }
 
+nav {
+}
+
+button {
+  margin: 2vh;
+  font-size: large;
+}
+
+.selected {
+  background-color: gray;
+  color: whitesmoke;
+}
+
 header {
   width: 100%;
 }

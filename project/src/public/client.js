@@ -15,7 +15,20 @@ const updateStore = (store, newState) => {
 const render = async (root, state) => {
     root.innerHTML = App(state)
     document.getElementsByTagName('nav')[0].append(...renderButtons(state.rovers));
+    addRoverListeners();
 }
+
+// add button listeners to the rovers 
+const addRoverListeners = () => {
+    document.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', function () {
+            document.querySelector('.selected').classList.remove('selected');
+            button.classList.add('selected');
+            fetchManifest(button.innerText, store);
+        });
+    });
+}
+
 
 const renderButtons = (buttonNames) => {
     buttons = buttonNames.map((name, idx) => {
