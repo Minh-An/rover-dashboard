@@ -14,12 +14,35 @@ const updateStore = (store, newState) => {
 
 const render = async (root, state) => {
     root.innerHTML = App(state)
+    document.getElementsByTagName('nav')[0].append(...renderButtons(state.rovers));
+}
+
+const renderButtons = (buttonNames) => {
+    buttons = buttonNames.map((name, idx) => {
+        const button = document.createElement('button');
+        if (idx === 0) button.classList.add('selected');
+        button.innerText = name;
+        return button;
+    });
+    return buttons;
 }
 
 
 // create content
 const App = (state) => {
     let { rovers, apod } = state
+
+    return `<header>
+                <h1>Mars Rover Dashboard</h1>
+                <p>Click on a Mars Rover name to view its information and photos.</p>
+            </header>
+            <nav>
+            </nav>
+            <div id="stats">
+            </div>
+            <div id="photos">
+            </div>
+            <footer>Rover Information Taken From <a href="https://www.nasa.gov">NASA</a></footer>`
 
     return `
         <header></header>
@@ -97,9 +120,7 @@ const ImageOfTheDay = (apod) => {
 const getImageOfTheDay = (state) => {
     let { apod } = state
 
-    fetch(`http://localhost:3000/apod`)
+    fetch(`http://ans-macbook-pro.lan:3000/apod`)
         .then(res => res.json())
         .then(apod => updateStore(store, { apod }))
-
-    return data
 }
