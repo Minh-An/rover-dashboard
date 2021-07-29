@@ -30,12 +30,19 @@ const addRoverListeners = () => {
 }
 
 const renderPhotos = (photos) => {
-    const htmlPhotos = photos.map((photo, idx) => {
+    const photoGroups = photos.map((photo, idx) => {
+        const photoGroup = document.createElement('div');
+        photoGroup.classList.add('photo-group')
         const htmlPhoto = document.createElement('img');
         htmlPhoto.src = photo.img_src;
-        return htmlPhoto;
+        photoGroup.appendChild(htmlPhoto);
+        const photoDate = document.createElement('p');
+        const date = new Date(photo.earth_date);
+        photoDate.innerText = `Date Taken: ${date.toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}`
+        photoGroup.appendChild(photoDate);
+        return photoGroup;
     });
-    return htmlPhotos;
+    return photoGroups;
 }
 
 const renderStats = (rover) => {
@@ -100,7 +107,8 @@ const fetchPhotos = (name, date, store) => {
     console.log(date);
     fetch(`/rover/${name}/${date}`)
         .then(res => res.json())
-        .then(photos => {   
+        .then(photos => {
+            document.getElementById('photos').innerHTML = '';
             document.getElementById('photos').append(...renderPhotos(photos));
         });
 }

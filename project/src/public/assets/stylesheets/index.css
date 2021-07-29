@@ -10,9 +10,12 @@ body {
   text-align: center;
 }
 
+.photo-group {
+  margin: 5%;
+}
+
 img {
-  width: 100%;
-  margin: 5%
+  width: 80ch;
 }
 
 button {
