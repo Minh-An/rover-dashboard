@@ -1,6 +1,6 @@
 let store = {
     user: { name: "Student" },
-    apod: '',
+    currentRoverData: '',
     rovers: ['Curiosity', 'Opportunity', 'Spirit'],
 }
 
@@ -9,7 +9,7 @@ const root = document.getElementById('root')
 
 const updateStore = (store, newState) => {
     store = Object.assign(store, newState)
-    render(root, store)
+    fetchPhotos(store.currentRoverData.name, store.currentRoverData.max_date);
 }
 
 const render = async (root, state) => {
@@ -29,8 +29,16 @@ const addRoverListeners = () => {
     });
 }
 
-function renderStats(rover) {
-    console.log(rover);
+const renderPhotos = (photos) => {
+    const htmlPhotos = photos.map((photo, idx) => {
+        const htmlPhoto = document.createElement('img');
+        htmlPhoto.src = photo.img_src;
+        return htmlPhoto;
+    });
+    return htmlPhotos;
+}
+
+const renderStats = (rover) => {
     document.getElementById('stats').innerHTML = `
         <div><span class="key">Status: </span><span class="val">${rover.get('status')}</span></div>
         <div><span class="key">Launch Date: </span><span class="val">${new Date(rover.get('launch_date')).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}</span></div>
@@ -41,7 +49,10 @@ function renderStats(rover) {
 const renderButtons = (buttonNames) => {
     buttons = buttonNames.map((name, idx) => {
         const button = document.createElement('button');
-        if (idx === 0) button.classList.add('selected');
+        if (idx === 2) {
+            button.classList.add('selected');
+            fetchManifest(name, store);
+        }
         button.innerText = name;
         return button;
     });
@@ -80,5 +91,16 @@ const fetchManifest= (name, store) => {
         .then(res => res.json())
         .then(rover => {       
             renderStats(Immutable.Map(rover));
+            updateStore(store, {currentRoverData: rover});
+        });
+}
+
+const fetchPhotos = (name, date, store) => {
+    console.log(name);
+    console.log(date);
+    fetch(`/rover/${name}/${date}`)
+        .then(res => res.json())
+        .then(photos => {   
+            document.getElementById('photos').append(...renderPhotos(photos));
         });
 }
