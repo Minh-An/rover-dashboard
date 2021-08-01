@@ -1,18 +1,18 @@
-let store = {
+const store = Immutable.Map({
     user: { name: "Student" },
-    currentRoverData: '',
-    rovers: ['Curiosity', 'Opportunity', 'Spirit'],
-};
+    currentRoverData: "",
+    rovers: ['Curiosity', 'Opportunity', 'Spirit']
+});
 
 // ------------------------------------------------------  COMPONENTS
 
 // add our markup to the page
 const root = document.getElementById('root');
 
-const updateStore = (store, newState) => {
-    store = Object.assign(store, newState);
+const updateStore = (store, rover) => {
+    store = store.set('currentRoverData', Immutable.fromJS(rover));
     // whenever store has new rover, update photos
-    fetchPhotos(store.currentRoverData.name, store.currentRoverData.max_date);
+    fetchPhotos(store.get('currentRoverData').get('name'), store.get('currentRoverData').get('max_date'));
 };
 
 // HIGHER ORDER FUNCTION 1
@@ -24,7 +24,7 @@ const renderElement = (element, renderFunc, arr) => {
 
 const render = async (root, state) => {
     root.innerHTML = App();
-    renderElement(document.getElementsByTagName('nav')[0], renderButtons, state.rovers);
+    renderElement(document.getElementsByTagName('nav')[0], renderButtons, state.get('rovers'));
     addRoverListeners((button) => {
         document.querySelector('.selected').classList.remove('selected');
         button.classList.add('selected');
@@ -106,7 +106,7 @@ const fetchManifest= (name, store) => {
         .then(res => res.json())
         .then(rover => {       
             renderStats(Immutable.Map(rover));
-            updateStore(store, {currentRoverData: rover});
+            updateStore(store, rover);
         });
 };
 
